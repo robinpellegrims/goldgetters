@@ -1,16 +1,28 @@
 import type { Metadata } from 'next';
-import { Geist, Geist_Mono } from 'next/font/google';
+import { Playfair_Display, Space_Mono, Fjalla_One } from 'next/font/google';
 import './globals.css';
 import { SiteHeader } from '@/components/site-header';
 
-const geistSans = Geist({
-  variable: '--font-geist-sans',
+const sans = Fjalla_One({
+  variable: '--font-sans',
   subsets: ['latin'],
+  weight: '400',
+  display: 'swap',
 });
 
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
+const serif = Playfair_Display({
+  variable: '--font-serif',
   subsets: ['latin'],
+  weight: ['400', '700'],
+  style: ['normal', 'italic'],
+  display: 'swap',
+});
+
+const mono = Space_Mono({
+  variable: '--font-mono',
+  subsets: ['latin'],
+  weight: ['400', '700'],
+  display: 'swap',
 });
 
 export const metadata: Metadata = {
@@ -26,7 +38,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${sans.variable} ${serif.variable} ${mono.variable} antialiased`}
       >
         <SiteHeader />
         <main className="mx-auto w-full max-w-5xl px-4">{children}</main>
