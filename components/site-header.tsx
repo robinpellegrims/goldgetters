@@ -22,9 +22,12 @@ export function SiteHeader() {
   return (
     <header className="w-full border-b bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3">
-        <div className="text-base font-semibold whitespace-nowrap shrink-0">
+        <Link
+          href="/"
+          className="text-base font-semibold whitespace-nowrap shrink-0 text-gold"
+        >
           ZVC Goldgetters
-        </div>
+        </Link>
         <NavigationMenu>
           <NavigationMenuList>
             {items.map((item) => (
