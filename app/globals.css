@@ -126,6 +126,24 @@
     0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 8px 10px -1px hsl(0 0% 0% / 0.1);
   --shadow-2xl: 0 1px 3px 0px hsl(0 0% 0% / 0.25);
   --tracking-normal: 0em;
+  /* Gold effect: light-mode gradient */
+  --gold-gradient: repeating-linear-gradient(
+    to right,
+    #44290a 0%,
+    #533314 8%,
+    #533314 18%,
+    #6c5229 27%,
+    #958a6e 35%,
+    #a6a08c 40%,
+    #958a6e 50%,
+    #6c5229 58%,
+    #533314 67%,
+    #4b3011 77%,
+    #553512 83%,
+    #6e491d 88%,
+    #775225 93%,
+    #40250a 100%
+  );
 }
 
 .dark {
@@ -185,6 +203,24 @@
   --shadow-xl:
     0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 8px 10px -1px hsl(0 0% 0% / 0.1);
   --shadow-2xl: 0 1px 3px 0px hsl(0 0% 0% / 0.25);
+  /* Gold effect: dark-mode gradient */
+  --gold-gradient: repeating-linear-gradient(
+    to right,
+    #a2682a 0%,
+    #be8c3c 8%,
+    #be8c3c 18%,
+    #d3b15f 27%,
+    #faf0a0 35%,
+    #ffffc2 40%,
+    #faf0a0 50%,
+    #d3b15f 58%,
+    #be8c3c 67%,
+    #b17b32 77%,
+    #bb8332 83%,
+    #d4a245 88%,
+    #e1b453 93%,
+    #a4692a 100%
+  );
 }
 
 @layer base {
@@ -194,5 +230,30 @@
   body {
     @apply bg-background text-foreground;
     letter-spacing: var(--tracking-normal);
+  }
+}
+
+/* Gold text effect utility */
+@layer utilities {
+  .text-gold {
+    background-image: var(--gold-gradient);
+    background-size: 150%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 0 1px rgba(255, 200, 0, 0.3));
+    animation: gold-move 5s ease-in-out infinite;
+  }
+}
+
+@keyframes gold-move {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
   }
 }
