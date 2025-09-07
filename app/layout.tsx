@@ -36,7 +36,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <script
+          // Prevent theme flash on first paint
+          dangerouslySetInnerHTML={{
+            __html: `(() => { try { const ls = localStorage.getItem('theme'); const m = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches; const dark = ls ? ls === 'dark' : m; const root = document.documentElement; dark ? root.classList.add('dark') : root.classList.remove('dark'); } catch (_) {} })();`,
+          }}
+        />
+      </head>
       <body
         className={`${sans.variable} ${serif.variable} ${mono.variable} antialiased`}
       >
