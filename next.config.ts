@@ -7,10 +7,11 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'placehold.co',
       },
-      {
-        protocol: 'https',
-        hostname: '**', // Allow all HTTPS image sources for development
-      },
+      // Add your actual API image domain here when available
+      // {
+      //   protocol: 'https',
+      //   hostname: 'your-api-domain.com',
+      // },
     ],
   },
 };
