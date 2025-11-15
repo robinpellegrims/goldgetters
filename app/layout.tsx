@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Playfair_Display, Space_Mono, Fjalla_One } from 'next/font/google';
 import './globals.css';
 import { SiteHeader } from '@/components/site-header';
+import { SiteFooter } from '@/components/site-footer';
 
 const sans = Fjalla_One({
   variable: '--font-sans',
@@ -46,10 +47,11 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`${sans.variable} ${serif.variable} ${mono.variable} antialiased`}
+        className={`${sans.variable} ${serif.variable} ${mono.variable} antialiased flex flex-col min-h-screen`}
       >
         <SiteHeader />
-        <main className="mx-auto w-full max-w-5xl px-4">{children}</main>
+        <main className="mx-auto w-full max-w-5xl px-4 flex-1">{children}</main>
+        <SiteFooter />
       </body>
     </html>
   );
