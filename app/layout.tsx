@@ -30,6 +30,10 @@ export const metadata: Metadata = {
   title: 'ZVC Goldgetters - Zaalvoetbalclub',
   description:
     'Officiële website van ZVC Goldgetters. Volg ons nieuws, bekijk wedstrijden, ontdek onze ploeg en statistieken van de Goldgetters zaalvoetbalclub.',
+  icons: {
+    icon: [{ url: '/icon.png', sizes: 'any', type: 'image/png' }],
+    apple: [{ url: '/apple-icon.png', sizes: '180x180', type: 'image/png' }],
+  },
 };
 
 export default function RootLayout({
