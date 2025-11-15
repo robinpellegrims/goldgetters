@@ -26,7 +26,7 @@ export function mapTeamMemberFromApi(apiMember: TeamMemberApi): TeamMember {
  * @returns Array of team member data for components
  */
 export function mapTeamMembersFromApi(
-  apiMembers: TeamMemberApi[]
+  apiMembers: TeamMemberApi[],
 ): TeamMember[] {
   return apiMembers.map(mapTeamMemberFromApi);
 }

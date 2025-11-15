@@ -98,7 +98,8 @@ export function PlayerCard({ member }: { member: TeamMember }) {
         )}
         {membershipYears !== null && (
           <CardDescription className="text-xs pt-1">
-            Lid sinds {membershipYears} {membershipYears === 1 ? 'jaar' : 'jaar'}
+            Lid sinds {membershipYears}{' '}
+            {membershipYears === 1 ? 'jaar' : 'jaar'}
           </CardDescription>
         )}
       </CardHeader>

@@ -29,7 +29,7 @@ export function getMainSquad(): TeamMember[] {
   // return mapTeamMembersFromApi(apiData);
 
   const mainSquadApi = mockTeamMembersApi.filter(
-    (member) => member.squad_type === 'main'
+    (member) => member.squad_type === 'main',
   );
   return mapTeamMembersFromApi(mainSquadApi);
 }
@@ -46,7 +46,7 @@ export function getReserveSquad(): TeamMember[] {
   // return mapTeamMembersFromApi(apiData);
 
   const reserveSquadApi = mockTeamMembersApi.filter(
-    (member) => member.squad_type === 'reserve'
+    (member) => member.squad_type === 'reserve',
   );
   return mapTeamMembersFromApi(reserveSquadApi);
 }
