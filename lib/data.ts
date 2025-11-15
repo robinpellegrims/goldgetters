@@ -1,5 +1,6 @@
 import { TeamMember } from '@/components/player-card';
-import { mockTeamMembers } from './mock-data';
+import { mockTeamMembersApi } from './mock-data';
+import { mapTeamMembersFromApi, mapTeamMemberFromApi } from './mappers';
 
 /**
  * Fetches all team members from the data source
@@ -10,9 +11,10 @@ export function getTeamMembers(): TeamMember[] {
   // Example:
   // const response = await fetch('/api/team-members');
   // if (!response.ok) throw new Error('Failed to fetch team members');
-  // return response.json();
+  // const apiData = await response.json();
+  // return mapTeamMembersFromApi(apiData);
 
-  return mockTeamMembers;
+  return mapTeamMembersFromApi(mockTeamMembersApi);
 }
 
 /**
@@ -23,9 +25,13 @@ export function getMainSquad(): TeamMember[] {
   // Example:
   // const response = await fetch('/api/team-members?squad=main');
   // if (!response.ok) throw new Error('Failed to fetch main squad');
-  // return response.json();
+  // const apiData = await response.json();
+  // return mapTeamMembersFromApi(apiData);
 
-  return mockTeamMembers.filter((member) => member.squad === 'main');
+  const mainSquadApi = mockTeamMembersApi.filter(
+    (member) => member.squad_type === 'main'
+  );
+  return mapTeamMembersFromApi(mainSquadApi);
 }
 
 /**
@@ -36,9 +42,13 @@ export function getReserveSquad(): TeamMember[] {
   // Example:
   // const response = await fetch('/api/team-members?squad=reserve');
   // if (!response.ok) throw new Error('Failed to fetch reserve squad');
-  // return response.json();
+  // const apiData = await response.json();
+  // return mapTeamMembersFromApi(apiData);
 
-  return mockTeamMembers.filter((member) => member.squad === 'reserve');
+  const reserveSquadApi = mockTeamMembersApi.filter(
+    (member) => member.squad_type === 'reserve'
+  );
+  return mapTeamMembersFromApi(reserveSquadApi);
 }
 
 /**
@@ -50,9 +60,11 @@ export function getTeamMemberById(id: number): TeamMember | undefined {
   // Example:
   // const response = await fetch(`/api/team-members/${id}`);
   // if (!response.ok) throw new Error('Failed to fetch team member');
-  // return response.json();
+  // const apiData = await response.json();
+  // return mapTeamMemberFromApi(apiData);
 
-  return mockTeamMembers.find((member) => member.id === id);
+  const apiMember = mockTeamMembersApi.find((member) => member.id === id);
+  return apiMember ? mapTeamMemberFromApi(apiMember) : undefined;
 }
 
 // Future async implementation example:
