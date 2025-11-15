@@ -29,20 +29,6 @@ export default function PloegPage() {
           <PlayerCard key={member.id} member={member} />
         ))}
       </div>
-
-      <div className="mt-12 p-6 rounded-lg bg-muted/50 border">
-        <h2 className="text-2xl font-semibold mb-3">Word lid van onze ploeg!</h2>
-        <p className="text-muted-foreground mb-4">
-          Ben je geïnteresseerd om met ons mee te spelen? Neem contact met ons op
-          voor meer informatie over trainingen en wedstrijden.
-        </p>
-        <a
-          href="/contact"
-          className="inline-flex items-center justify-center rounded-md bg-gold px-6 py-2 text-sm font-medium text-gold-foreground transition-colors hover:bg-gold/90"
-        >
-          Contacteer ons
-        </a>
-      </div>
     </div>
   );
 }
