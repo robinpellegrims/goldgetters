@@ -1,14 +1,11 @@
 import { Metadata } from 'next';
-import { PlayerCard, TeamMember } from '@/components/player-card';
+import { PlayerCard } from '@/components/player-card';
+import { getTeamMembers } from '@/lib/data';
 
 export const metadata: Metadata = {
   title: 'Ploeg | ZVC Goldgetters',
   description: 'Ontmoet de spelers van ZVC Goldgetters. Bekijk onze volledige spelerslijst met foto\'s en informatie.',
 };
-
-// TODO: Replace with API call
-// Example: const teamMembers = await fetch('/api/team-members').then(res => res.json());
-import { getTeamMembers } from '@/data/team-members';
 
 export default function PloegPage() {
   const teamMembers = getTeamMembers();

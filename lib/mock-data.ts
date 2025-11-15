@@ -1,9 +1,7 @@
 import { TeamMember } from '@/components/player-card';
 
-// TODO: Replace this with actual API/database calls
-// This is temporary mock data for development
-
-const teamMembers: TeamMember[] = [
+// Mock data for development
+export const mockTeamMembers: TeamMember[] = [
   {
     id: 1,
     name: 'Robin Pellegrims',
@@ -61,13 +59,3 @@ const teamMembers: TeamMember[] = [
     role: 'Speler',
   },
 ];
-
-export function getTeamMembers(): TeamMember[] {
-  return teamMembers;
-}
-
-// Future: async function to fetch from API
-// export async function getTeamMembers(): Promise<TeamMember[]> {
-//   const response = await fetch('/api/team-members');
-//   return response.json();
-// }
