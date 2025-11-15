@@ -5,13 +5,8 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'placehold.co',
+        hostname: 'r2.goldgetters.be',
       },
-      // Add your actual API image domain here when available
-      // {
-      //   protocol: 'https',
-      //   hostname: 'your-api-domain.com',
-      // },
     ],
   },
 };
