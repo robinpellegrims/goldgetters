@@ -87,23 +87,11 @@ export function PlayerCard({ member }: { member: TeamMember }) {
         </div>
       </CardContent>
       <CardHeader className="p-4 space-y-2">
-        <CardTitle className="text-lg">{member.name}</CardTitle>
+        <CardTitle className="text-lg text-gold">{member.name}</CardTitle>
         {member.position && (
           <CardDescription className="capitalize">
             {capitalize(member.position)}
           </CardDescription>
-        )}
-        {member.functions && member.functions.length > 0 && (
-          <div className="flex flex-wrap gap-1 pt-1">
-            {member.functions.map((func) => (
-              <span
-                key={func}
-                className="inline-flex items-center rounded-full bg-gold/10 px-2 py-0.5 text-xs font-medium text-gold"
-              >
-                {capitalize(func)}
-              </span>
-            ))}
-          </div>
         )}
         {membershipYears !== null && (
           <CardDescription className="text-xs pt-1">
