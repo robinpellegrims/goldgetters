@@ -5,6 +5,7 @@ interface TeamMember {
   position?: string;
   role?: string;
   photo?: string;
+  squad?: 'main' | 'reserve'; // Spelerskern or Reserves
 }
 
 export function PlayerCard({ member }: { member: TeamMember }) {

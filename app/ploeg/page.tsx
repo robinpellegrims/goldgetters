@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import { PlayerCard } from '@/components/player-card';
-import { getTeamMembers } from '@/lib/data';
+import { getMainSquad, getReserveSquad } from '@/lib/data';
 
 export const metadata: Metadata = {
   title: 'Ploeg | ZVC Goldgetters',
@@ -8,7 +8,8 @@ export const metadata: Metadata = {
 };
 
 export default function PloegPage() {
-  const teamMembers = getTeamMembers();
+  const mainSquad = getMainSquad();
+  const reserveSquad = getReserveSquad();
 
   return (
     <div className="py-8">
@@ -21,11 +22,27 @@ export default function PloegPage() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {teamMembers.map((member) => (
-          <PlayerCard key={member.id} member={member} />
-        ))}
-      </div>
+      {/* Main Squad Section */}
+      <section className="mb-12">
+        <h2 className="text-2xl font-semibold mb-6">Spelerskern</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {mainSquad.map((member) => (
+            <PlayerCard key={member.id} member={member} />
+          ))}
+        </div>
+      </section>
+
+      {/* Reserve Squad Section */}
+      {reserveSquad.length > 0 && (
+        <section>
+          <h2 className="text-2xl font-semibold mb-6">Reserves</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {reserveSquad.map((member) => (
+              <PlayerCard key={member.id} member={member} />
+            ))}
+          </div>
+        </section>
+      )}
     </div>
   );
 }

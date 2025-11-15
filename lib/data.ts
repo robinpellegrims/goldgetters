@@ -2,7 +2,7 @@ import { TeamMember } from '@/components/player-card';
 import { mockTeamMembers } from './mock-data';
 
 /**
- * Fetches team members from the data source
+ * Fetches all team members from the data source
  * Currently returns mock data, but can be replaced with API calls
  */
 export function getTeamMembers(): TeamMember[] {
@@ -13,6 +13,32 @@ export function getTeamMembers(): TeamMember[] {
   // return response.json();
 
   return mockTeamMembers;
+}
+
+/**
+ * Fetches main squad team members (spelerskern)
+ */
+export function getMainSquad(): TeamMember[] {
+  // TODO: Replace with actual API call
+  // Example:
+  // const response = await fetch('/api/team-members?squad=main');
+  // if (!response.ok) throw new Error('Failed to fetch main squad');
+  // return response.json();
+
+  return mockTeamMembers.filter((member) => member.squad === 'main');
+}
+
+/**
+ * Fetches reserve squad team members
+ */
+export function getReserveSquad(): TeamMember[] {
+  // TODO: Replace with actual API call
+  // Example:
+  // const response = await fetch('/api/team-members?squad=reserve');
+  // if (!response.ok) throw new Error('Failed to fetch reserve squad');
+  // return response.json();
+
+  return mockTeamMembers.filter((member) => member.squad === 'reserve');
 }
 
 /**

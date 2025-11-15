@@ -2,12 +2,14 @@ import { TeamMember } from '@/components/player-card';
 
 // Mock data for development
 export const mockTeamMembers: TeamMember[] = [
+  // Main squad - Spelerskern
   {
     id: 1,
     name: 'Robin Pellegrims',
     number: 10,
     position: 'Aanvaller',
     role: 'Speler',
+    squad: 'main',
   },
   {
     id: 2,
@@ -15,6 +17,7 @@ export const mockTeamMembers: TeamMember[] = [
     number: 7,
     position: 'Middenvelder',
     role: 'Speler',
+    squad: 'main',
   },
   {
     id: 3,
@@ -22,6 +25,7 @@ export const mockTeamMembers: TeamMember[] = [
     number: 1,
     position: 'Doelman',
     role: 'Speler',
+    squad: 'main',
   },
   {
     id: 4,
@@ -29,6 +33,7 @@ export const mockTeamMembers: TeamMember[] = [
     number: 5,
     position: 'Verdediger',
     role: 'Speler',
+    squad: 'main',
   },
   {
     id: 5,
@@ -36,6 +41,7 @@ export const mockTeamMembers: TeamMember[] = [
     number: 11,
     position: 'Aanvaller',
     role: 'Speler',
+    squad: 'main',
   },
   {
     id: 6,
@@ -43,6 +49,7 @@ export const mockTeamMembers: TeamMember[] = [
     number: 8,
     position: 'Middenvelder',
     role: 'Speler',
+    squad: 'main',
   },
   {
     id: 7,
@@ -50,6 +57,7 @@ export const mockTeamMembers: TeamMember[] = [
     number: 3,
     position: 'Verdediger',
     role: 'Speler',
+    squad: 'main',
   },
   {
     id: 8,
@@ -57,5 +65,47 @@ export const mockTeamMembers: TeamMember[] = [
     number: 9,
     position: 'Aanvaller',
     role: 'Speler',
+    squad: 'main',
+  },
+  // Reserve squad - Reserves
+  {
+    id: 9,
+    name: 'Mark Janssens',
+    number: 12,
+    position: 'Doelman',
+    role: 'Speler',
+    squad: 'reserve',
+  },
+  {
+    id: 10,
+    name: 'Kevin Vermeulen',
+    number: 14,
+    position: 'Verdediger',
+    role: 'Speler',
+    squad: 'reserve',
+  },
+  {
+    id: 11,
+    name: 'Luc Wouters',
+    number: 15,
+    position: 'Middenvelder',
+    role: 'Speler',
+    squad: 'reserve',
+  },
+  {
+    id: 12,
+    name: 'Steven Maes',
+    number: 16,
+    position: 'Aanvaller',
+    role: 'Speler',
+    squad: 'reserve',
+  },
+  {
+    id: 13,
+    name: 'Frank Mertens',
+    number: 17,
+    position: 'Verdediger',
+    role: 'Speler',
+    squad: 'reserve',
   },
 ];
