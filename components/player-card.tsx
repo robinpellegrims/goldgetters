@@ -5,6 +5,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import Image from 'next/image';
 
 interface TeamMember {
   id: number;
@@ -50,10 +51,12 @@ export function PlayerCard({ member }: { member: TeamMember }) {
       <CardContent className="p-0">
         <div className="aspect-square bg-gradient-to-br from-gold/20 to-gold/5 flex items-center justify-center relative overflow-hidden">
           {member.photo ? (
-            <img
+            <Image
               src={member.photo}
               alt={member.name}
-              className="w-full h-full object-cover"
+              fill
+              className="object-cover"
+              sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
             />
           ) : (
             <div className="flex flex-col items-center justify-center text-center p-6">
