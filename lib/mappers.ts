@@ -15,6 +15,8 @@ export function mapTeamMemberFromApi(apiMember: TeamMemberApi): TeamMember {
     role: apiMember.role ?? undefined,
     photo: apiMember.photo_url ?? undefined,
     squad: apiMember.squad_type ?? undefined,
+    functions: apiMember.functions ?? undefined,
+    joinDate: apiMember.join_date ? new Date(apiMember.join_date) : undefined,
   };
 }
 
