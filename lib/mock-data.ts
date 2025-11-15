@@ -10,7 +10,7 @@ export const mockTeamMembersApi: TeamMemberApi[] = [
     position: 'veldspeler',
     role: 'Speler',
     squad_type: 'main',
-    photo_url: 'https://placehold.co/400x400/8a7d5e/ffffff?text=RP',
+    photo_url: null, // TODO: Replace with actual photo URL from API
     functions: ['kapitein'],
     join_date: '2015-09-01',
   },
@@ -21,7 +21,7 @@ export const mockTeamMembersApi: TeamMemberApi[] = [
     position: 'veldspeler',
     role: 'Speler',
     squad_type: 'main',
-    photo_url: 'https://placehold.co/400x400/8a7d5e/ffffff?text=TB',
+    photo_url: null, // TODO: Replace with actual photo URL from API
     functions: ['voorzitter'],
     join_date: '2014-08-15',
   },
