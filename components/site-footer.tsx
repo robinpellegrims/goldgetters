@@ -2,16 +2,16 @@ export function SiteFooter() {
   return (
     <footer className="w-full border-t border-black/[.08] dark:border-white/[.12] bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60 mt-auto">
       <div className="mx-auto flex max-w-5xl items-center justify-center gap-4 px-4 py-6">
-        <p className="text-sm text-muted-foreground">
+        <p className="text-base text-muted-foreground">
           &copy; {new Date().getFullYear()} ZVC Goldgetters.
         </p>
-        <span className="text-sm text-muted-foreground">
+        <span className="text-base text-muted-foreground">
           Website door{' '}
           <a
             href="https://www.cotersus.be/"
             target="_blank"
             rel="noopener noreferrer sponsored nofollow"
-            className="text-gray-400 hover:text-white transition-colors"
+            className="hover:text-foreground transition-colors"
           >
             Cotersus
           </a>
