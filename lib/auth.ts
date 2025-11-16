@@ -205,37 +205,150 @@ export async function getCurrentUser(): Promise<User | null> {
   return user;
 }
 
-// Send magic link email (placeholder - integrate with your email service)
+// Send magic link email
 export async function sendMagicLinkEmail(
   email: string,
   token: string,
 ): Promise<void> {
   const magicLinkUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/auth/verify?token=${token}`;
 
-  console.log('='.repeat(80));
-  console.log('INLOGLINK E-MAIL');
-  console.log('='.repeat(80));
-  console.log(`Aan: ${email}`);
-  console.log(`Onderwerp: Inloggen bij ZVC Goldgetters`);
-  console.log('');
-  console.log('Klik op de link hieronder om in te loggen:');
-  console.log(magicLinkUrl);
-  console.log('');
-  console.log('Deze link verloopt over 15 minuten.');
-  console.log('='.repeat(80));
+  // In development mode, log to console
+  if (process.env.NODE_ENV === 'development') {
+    console.log('='.repeat(80));
+    console.log('INLOGLINK E-MAIL');
+    console.log('='.repeat(80));
+    console.log(`Aan: ${email}`);
+    console.log(`Onderwerp: Inloggen bij ZVC Goldgetters`);
+    console.log('');
+    console.log('Klik op de link hieronder om in te loggen:');
+    console.log(magicLinkUrl);
+    console.log('');
+    console.log('Deze link verloopt over 15 minuten.');
+    console.log('='.repeat(80));
+  }
 
-  // TODO: Replace with actual email service (Resend, SendGrid, etc.)
-  // Example with Resend:
-  // const resend = new Resend(process.env.RESEND_API_KEY);
-  // await resend.emails.send({
-  //   from: 'ZVC Goldgetters <noreply@goldgetters.com>',
-  //   to: email,
-  //   subject: 'Inloggen bij ZVC Goldgetters',
-  //   html: `
-  //     <h1>Inloggen bij ZVC Goldgetters</h1>
-  //     <p>Klik op de link hieronder om in te loggen:</p>
-  //     <a href="${magicLinkUrl}">Inloggen</a>
-  //     <p>Deze link verloopt over 15 minuten.</p>
-  //   `,
-  // });
+  // Only send email if SMTP is configured
+  if (!process.env.SMTP_HOST || !process.env.SMTP_USER) {
+    console.warn(
+      'SMTP is not configured. Email will not be sent in production.',
+    );
+    return;
+  }
+
+  // Dynamically import nodemailer (only when needed)
+  const nodemailer = await import('nodemailer');
+
+  // Configure SMTP transporter (using same config as contact form)
+  const transporter = nodemailer.default.createTransport({
+    host: process.env.SMTP_HOST,
+    port: parseInt(process.env.SMTP_PORT || '587'),
+    secure: process.env.SMTP_PORT === '465',
+    auth: {
+      user: process.env.SMTP_USER,
+      pass: process.env.SMTP_PASS,
+    },
+  });
+
+  const emailFrom = process.env.SMTP_USER;
+
+  // Send email
+  await transporter.sendMail({
+    from: `"ZVC Goldgetters" <${emailFrom}>`,
+    to: email,
+    subject: 'Inloggen bij ZVC Goldgetters',
+    text: `
+Inloggen bij ZVC Goldgetters
+
+Klik op de onderstaande link om in te loggen:
+${magicLinkUrl}
+
+Deze link is 15 minuten geldig.
+
+Als je deze e-mail niet hebt aangevraagd, kun je deze negeren.
+
+Met vriendelijke groet,
+ZVC Goldgetters
+    `,
+    html: /* HTML */ `
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <style>
+            body {
+              font-family: Arial, sans-serif;
+              line-height: 1.6;
+              color: #333;
+            }
+            .container {
+              max-width: 600px;
+              margin: 0 auto;
+              padding: 20px;
+            }
+            .header {
+              text-align: center;
+              margin-bottom: 30px;
+            }
+            .logo {
+              font-size: 24px;
+              font-weight: bold;
+              background: linear-gradient(135deg, #a2682a 0%, #e1b453 100%);
+              -webkit-background-clip: text;
+              -webkit-text-fill-color: transparent;
+              background-clip: text;
+            }
+            .button {
+              display: inline-block;
+              padding: 12px 24px;
+              background: linear-gradient(135deg, #a2682a 0%, #e1b453 100%);
+              color: white;
+              text-decoration: none;
+              border-radius: 6px;
+              margin: 20px 0;
+              font-weight: bold;
+            }
+            .footer {
+              color: #666;
+              font-size: 14px;
+              margin-top: 30px;
+              padding-top: 20px;
+              border-top: 1px solid #eee;
+            }
+            .warning {
+              background-color: #fff3cd;
+              border-left: 4px solid #ffc107;
+              padding: 12px;
+              margin: 20px 0;
+              font-size: 14px;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <div class="header">
+              <div class="logo">ZVC Goldgetters</div>
+            </div>
+
+            <h2>Inloggen</h2>
+            <p>Klik op de onderstaande knop om in te loggen:</p>
+
+            <div style="text-align: center;">
+              <a href="${magicLinkUrl}" class="button">Inloggen</a>
+            </div>
+
+            <div class="warning">
+              <strong>Let op:</strong> Deze link is 15 minuten geldig en kan
+              slechts één keer gebruikt worden.
+            </div>
+
+            <div class="footer">
+              <p>
+                Als je deze e-mail niet hebt aangevraagd, kun je deze negeren.
+              </p>
+              <p>Met vriendelijke groet,<br />ZVC Goldgetters</p>
+            </div>
+          </div>
+        </body>
+      </html>
+    `,
+  });
 }
