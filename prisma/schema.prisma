@@ -1,0 +1,134 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// Player model for team members
+model Player {
+  id          String   @id @default(uuid())
+  firstName   String
+  lastName    String
+  nickname    String?
+  number      Int?
+  position    String?
+  birthDate   DateTime?
+  joinDate    DateTime @default(now())
+  photoUrl    String?
+  active      Boolean  @default(true)
+  bio         String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  statistics  PlayerStatistic[]
+
+  @@map("players")
+}
+
+// News/Articles model
+model News {
+  id          String   @id @default(uuid())
+  title       String
+  slug        String   @unique
+  content     String
+  excerpt     String?
+  coverImage  String?
+  published   Boolean  @default(false)
+  publishedAt DateTime?
+  authorName  String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("news")
+}
+
+// Match/Game model
+model Match {
+  id            String   @id @default(uuid())
+  homeTeam      String
+  awayTeam      String
+  homeScore     Int?
+  awayScore     Int?
+  matchDate     DateTime
+  location      String?
+  competition   String?
+  season        String
+  status        String   @default("scheduled") // scheduled, completed, cancelled
+  notes         String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@map("matches")
+}
+
+// Photo Gallery model
+model PhotoGallery {
+  id          String   @id @default(uuid())
+  title       String
+  slug        String   @unique
+  description String?
+  date        DateTime
+  coverImage  String?
+  published   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  photos      Photo[]
+
+  @@map("photo_galleries")
+}
+
+// Individual Photo model
+model Photo {
+  id          String   @id @default(uuid())
+  url         String
+  caption     String?
+  order       Int      @default(0)
+  galleryId   String
+  createdAt   DateTime @default(now())
+
+  gallery     PhotoGallery @relation(fields: [galleryId], references: [id], onDelete: Cascade)
+
+  @@map("photos")
+}
+
+// Player Statistics model
+model PlayerStatistic {
+  id          String   @id @default(uuid())
+  playerId    String
+  season      String
+  gamesPlayed Int      @default(0)
+  goals       Int      @default(0)
+  assists     Int      @default(0)
+  yellowCards Int      @default(0)
+  redCards    Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  player      Player   @relation(fields: [playerId], references: [id], onDelete: Cascade)
+
+  @@unique([playerId, season])
+  @@map("player_statistics")
+}
+
+// Contact Form Submissions (optional - to store contact form data)
+model ContactSubmission {
+  id          String   @id @default(uuid())
+  name        String
+  email       String
+  subject     String
+  message     String
+  ipAddress   String?
+  userAgent   String?
+  responded   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  @@map("contact_submissions")
+}
