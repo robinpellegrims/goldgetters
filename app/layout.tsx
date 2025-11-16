@@ -1,28 +1,20 @@
 import type { Metadata } from 'next';
-import { Playfair_Display, Space_Mono, Fjalla_One } from 'next/font/google';
+import { Barlow, Oswald } from 'next/font/google';
 import './globals.css';
 import { SiteHeader } from '@/components/site-header';
 import { SiteFooter } from '@/components/site-footer';
 
-const sans = Fjalla_One({
+const sans = Barlow({
   variable: '--font-sans',
   subsets: ['latin'],
-  weight: '400',
+  weight: ['400', '500', '600', '700'],
   display: 'swap',
 });
 
-const serif = Playfair_Display({
-  variable: '--font-serif',
+const display = Oswald({
+  variable: '--font-display',
   subsets: ['latin'],
-  weight: ['400', '700'],
-  style: ['normal', 'italic'],
-  display: 'swap',
-});
-
-const mono = Space_Mono({
-  variable: '--font-mono',
-  subsets: ['latin'],
-  weight: ['400', '700'],
+  weight: ['400', '500', '600', '700'],
   display: 'swap',
 });
 
@@ -52,7 +44,7 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`${sans.variable} ${serif.variable} ${mono.variable} antialiased flex flex-col min-h-screen`}
+        className={`${sans.variable} ${display.variable} antialiased flex flex-col min-h-screen`}
       >
         <SiteHeader />
         <main className="mx-auto w-full max-w-5xl px-4 flex-1">{children}</main>
