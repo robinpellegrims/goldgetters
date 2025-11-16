@@ -211,74 +211,36 @@ npx prisma generate
 
 Update `lib/auth.ts` to use Prisma instead of in-memory storage.
 
-#### 2. Set up Email Service
+#### 2. Email Service (Already Configured!)
 
-We recommend **Resend** for Next.js applications:
+The project already uses **nodemailer** with SMTP for sending emails (shared with the contact form).
 
-```bash
-pnpm add resend
-```
-
-Get your API key from [resend.com](https://resend.com) and add to `.env`:
+The magic link emails are automatically sent using the same SMTP configuration. Make sure you have the following environment variables set in `.env`:
 
 ```bash
-RESEND_API_KEY=re_xxxxxxxxxxxxx
-RESEND_FROM_EMAIL=noreply@yourdomain.com
+# SMTP Configuration (already in use for contact form)
+SMTP_HOST=smtp.example.com
+SMTP_PORT=587
+SMTP_USER=your-email@example.com
+SMTP_PASS=your-password
+
+# App URL for magic links
+NEXT_PUBLIC_APP_URL=https://yourdomain.com
 ```
 
-Update the `sendMagicLinkEmail` function in `lib/auth.ts`:
+**How it works:**
 
-```typescript
-import { Resend } from 'resend';
+- In **development mode**: Magic links are logged to the console (for easy testing)
+- In **production mode**: Emails are sent via SMTP to the user's email address
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+The `sendMagicLinkEmail` function in `lib/auth.ts` automatically:
 
-export async function sendMagicLinkEmail(
-  email: string,
-  token: string,
-): Promise<void> {
-  const magicLinkUrl = `${process.env.NEXT_PUBLIC_APP_URL}/auth/verify?token=${token}`;
+1. Checks if you're in development mode and logs to console
+2. Uses the same nodemailer configuration as the contact form
+3. Sends a styled email with the magic link
+4. Handles errors gracefully
 
-  await resend.emails.send({
-    from: process.env.RESEND_FROM_EMAIL!,
-    to: email,
-    subject: 'Sign in to ZVC Goldgetters',
-    html: `
-      <!DOCTYPE html>
-      <html>
-        <head>
-          <meta charset="utf-8">
-          <style>
-            body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
-            .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-            .button {
-              display: inline-block;
-              padding: 12px 24px;
-              background-color: #a2682a;
-              color: white;
-              text-decoration: none;
-              border-radius: 6px;
-              margin: 20px 0;
-            }
-            .footer { color: #666; font-size: 14px; margin-top: 20px; }
-          </style>
-        </head>
-        <body>
-          <div class="container">
-            <h1>Sign in to ZVC Goldgetters</h1>
-            <p>Click the button below to sign in to your account:</p>
-            <a href="${magicLinkUrl}" class="button">Sign In</a>
-            <p class="footer">
-              This link will expire in 15 minutes. If you didn't request this email,
-              you can safely ignore it.
-            </p>
-          </div>
-        </body>
-      </html>
-    `,
-  });
-}
-```
+**No additional setup needed!** The email service is already integrated and ready to use.
 
 #### 3. Environment Variables
 
@@ -291,11 +253,15 @@ cp .env.example .env
 Set the following variables:
 
 ```bash
-# Required
+# Required for production
 NEXT_PUBLIC_APP_URL=https://yourdomain.com
 DATABASE_URL=postgresql://user:password@localhost:5432/goldgetters
-RESEND_API_KEY=re_xxxxxxxxxxxxx
-RESEND_FROM_EMAIL=noreply@yourdomain.com
+
+# SMTP (already configured for contact form)
+SMTP_HOST=smtp.example.com
+SMTP_PORT=587
+SMTP_USER=your-email@example.com
+SMTP_PASS=your-password
 ```
 
 #### 4. Deploy
@@ -307,52 +273,6 @@ Make sure to:
 3. Test the email delivery
 4. Set up HTTPS (required for secure cookies)
 
-### Alternative Email Services
-
-#### SendGrid
-
-```typescript
-import sgMail from '@sendgrid/mail';
-
-sgMail.setApiKey(process.env.SENDGRID_API_KEY!);
-
-export async function sendMagicLinkEmail(email: string, token: string) {
-  const magicLinkUrl = `${process.env.NEXT_PUBLIC_APP_URL}/auth/verify?token=${token}`;
-
-  await sgMail.send({
-    to: email,
-    from: process.env.SENDGRID_FROM_EMAIL!,
-    subject: 'Sign in to ZVC Goldgetters',
-    html: `...`,
-  });
-}
-```
-
-#### Nodemailer (SMTP)
-
-```typescript
-import nodemailer from 'nodemailer';
-
-const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST,
-  port: parseInt(process.env.SMTP_PORT || '587'),
-  auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASSWORD,
-  },
-});
-
-export async function sendMagicLinkEmail(email: string, token: string) {
-  const magicLinkUrl = `${process.env.NEXT_PUBLIC_APP_URL}/auth/verify?token=${token}`;
-
-  await transporter.sendMail({
-    from: process.env.SMTP_FROM_EMAIL,
-    to: email,
-    subject: 'Sign in to ZVC Goldgetters',
-    html: `...`,
-  });
-}
-```
 
 ## Security Considerations
 
