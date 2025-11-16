@@ -92,94 +92,35 @@ npx prisma studio
 
 ## Database Schema
 
-The application includes the following models:
+The application includes a simple demo model to verify the backend is working:
 
-- **Player**: Team member information
-- **News**: News articles and announcements
-- **Match**: Match/game records
-- **PhotoGallery**: Photo gallery collections
-- **Photo**: Individual photos in galleries
-- **PlayerStatistic**: Player statistics per season
-- **ContactSubmission**: Contact form submissions
+- **DemoItem**: A simple model with `name` and `message` fields
+
+You can add more models later as needed for your application.
 
 ## API Endpoints
 
-### Players
+### Demo
 
-- `GET /api/players` - Get all players
-  - Query params: `?active=true` - Filter active players only
-- `GET /api/players/[id]` - Get a specific player
-- `POST /api/players` - Create a new player
-- `PUT /api/players/[id]` - Update a player
-- `DELETE /api/players/[id]` - Delete a player
-
-### News
-
-- `GET /api/news` - Get all news articles
-  - Query params:
-    - `?published=true` - Filter published articles only (default)
-    - `?limit=10` - Limit number of results
-- `GET /api/news/[slug]` - Get a specific news article
-- `POST /api/news` - Create a new news article
-- `PUT /api/news/[slug]` - Update a news article
-- `DELETE /api/news/[slug]` - Delete a news article
-
-### Matches
-
-- `GET /api/matches` - Get all matches
-  - Query params:
-    - `?season=2024-2025` - Filter by season
-    - `?status=scheduled` - Filter by status
-    - `?upcoming=true` - Get upcoming matches only
-- `GET /api/matches/[id]` - Get a specific match
-- `POST /api/matches` - Create a new match
-- `PUT /api/matches/[id]` - Update a match
-- `DELETE /api/matches/[id]` - Delete a match
+- `GET /api/demo` - Get all demo items
+- `POST /api/demo` - Create a new demo item
 
 ## Example API Requests
 
-### Create a Player
+### Get All Demo Items
 
 ```bash
-curl -X POST http://localhost:3000/api/players \
-  -H "Content-Type: application/json" \
-  -d '{
-    "firstName": "John",
-    "lastName": "Doe",
-    "nickname": "JD",
-    "number": 10,
-    "position": "Forward",
-    "active": true
-  }'
+curl http://localhost:3000/api/demo
 ```
 
-### Create a News Article
+### Create a Demo Item
 
 ```bash
-curl -X POST http://localhost:3000/api/news \
+curl -X POST http://localhost:3000/api/demo \
   -H "Content-Type: application/json" \
   -d '{
-    "title": "Team wins championship!",
-    "slug": "team-wins-championship",
-    "content": "The team has won the championship...",
-    "excerpt": "Victory at last!",
-    "authorName": "Admin",
-    "published": true
-  }'
-```
-
-### Create a Match
-
-```bash
-curl -X POST http://localhost:3000/api/matches \
-  -H "Content-Type: application/json" \
-  -d '{
-    "homeTeam": "Goldgetters",
-    "awayTeam": "Opponents FC",
-    "matchDate": "2025-11-20T19:00:00Z",
-    "season": "2024-2025",
-    "location": "Home Stadium",
-    "competition": "League"
+    "name": "Test Item",
+    "message": "This is a test message"
   }'
 ```
 
