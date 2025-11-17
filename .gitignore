@@ -41,3 +41,10 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 /.idea
+
+# payloadcms
+local.db
+local.db-shm
+local.db-wal
+payload-types.ts
+/media
