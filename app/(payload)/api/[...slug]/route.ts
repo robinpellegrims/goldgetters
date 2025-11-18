@@ -9,34 +9,30 @@ import {
   REST_POST,
 } from '@payloadcms/next/routes';
 
-export const GET = async (
+export async function GET(
   req: NextRequest,
-  args: { params: Promise<{ slug: string[] }> },
-) => {
-  const params = await args.params;
-  return REST_GET(req, { config, params });
-};
+  context: { params: Promise<{ slug: string[] }> },
+): Promise<Response> {
+  return REST_GET({ config, params: await context.params, req });
+}
 
-export const POST = async (
+export async function POST(
   req: NextRequest,
-  args: { params: Promise<{ slug: string[] }> },
-) => {
-  const params = await args.params;
-  return REST_POST(req, { config, params });
-};
+  context: { params: Promise<{ slug: string[] }> },
+): Promise<Response> {
+  return REST_POST({ config, params: await context.params, req });
+}
 
-export const DELETE = async (
+export async function DELETE(
   req: NextRequest,
-  args: { params: Promise<{ slug: string[] }> },
-) => {
-  const params = await args.params;
-  return REST_DELETE(req, { config, params });
-};
+  context: { params: Promise<{ slug: string[] }> },
+): Promise<Response> {
+  return REST_DELETE({ config, params: await context.params, req });
+}
 
-export const PATCH = async (
+export async function PATCH(
   req: NextRequest,
-  args: { params: Promise<{ slug: string[] }> },
-) => {
-  const params = await args.params;
-  return REST_PATCH(req, { config, params });
-};
+  context: { params: Promise<{ slug: string[] }> },
+): Promise<Response> {
+  return REST_PATCH({ config, params: await context.params, req });
+}
