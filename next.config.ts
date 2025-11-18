@@ -2,7 +2,7 @@ import type { NextConfig } from 'next';
 import { withPayload } from '@payloadcms/next/withPayload';
 
 const nextConfig: NextConfig = {
-  serverExternalPackages: ['@libsql/client'],
+  serverExternalPackages: ['@libsql/client', 'sharp'],
 };
 
 export default withPayload(nextConfig);
