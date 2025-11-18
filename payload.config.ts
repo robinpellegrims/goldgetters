@@ -100,6 +100,8 @@ export default buildConfig({
         pass: process.env.SMTP_PASS,
       },
     },
+    // Don't verify SMTP connection on boot to prevent blocking if SMTP isn't configured
+    verifyTransportOnBoot: false,
   }),
 
   // Storage - S3-compatible (AWS S3, Cloudflare R2, DigitalOcean Spaces, MinIO, etc.)
