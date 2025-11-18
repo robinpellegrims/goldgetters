@@ -1,17 +1,42 @@
 /* THIS FILE WAS GENERATED AUTOMATICALLY BY PAYLOAD. */
-import type { NextRequest } from 'next/server'
+import type { NextRequest } from 'next/server';
 
-import config from '@/payload.config'
-import { REST_DELETE, REST_GET, REST_PATCH, REST_POST } from '@payloadcms/next/routes'
+import config from '@/payload.config';
+import {
+  REST_DELETE,
+  REST_GET,
+  REST_PATCH,
+  REST_POST,
+} from '@payloadcms/next/routes';
 
-export const GET = (req: NextRequest, args: { params: Promise<{ slug: string[] }> }) =>
-  REST_GET(req, { config, params: args.params })
+export const GET = async (
+  req: NextRequest,
+  args: { params: Promise<{ slug: string[] }> },
+) => {
+  const params = await args.params;
+  return REST_GET(req, { config, params });
+};
 
-export const POST = (req: NextRequest, args: { params: Promise<{ slug: string[] }> }) =>
-  REST_POST(req, { config, params: args.params })
+export const POST = async (
+  req: NextRequest,
+  args: { params: Promise<{ slug: string[] }> },
+) => {
+  const params = await args.params;
+  return REST_POST(req, { config, params });
+};
 
-export const DELETE = (req: NextRequest, args: { params: Promise<{ slug: string[] }> }) =>
-  REST_DELETE(req, { config, params: args.params })
+export const DELETE = async (
+  req: NextRequest,
+  args: { params: Promise<{ slug: string[] }> },
+) => {
+  const params = await args.params;
+  return REST_DELETE(req, { config, params });
+};
 
-export const PATCH = (req: NextRequest, args: { params: Promise<{ slug: string[] }> }) =>
-  REST_PATCH(req, { config, params: args.params })
+export const PATCH = async (
+  req: NextRequest,
+  args: { params: Promise<{ slug: string[] }> },
+) => {
+  const params = await args.params;
+  return REST_PATCH(req, { config, params });
+};
