@@ -73,13 +73,14 @@ turso db tokens create goldgetters
 
 ### S3-Compatible Storage
 
+**Required variables**:
+
 ```env
 S3_BUCKET=your-bucket-name
 S3_ACCESS_KEY_ID=your-access-key-id
 S3_SECRET_ACCESS_KEY=your-secret-access-key
 S3_REGION=auto
 S3_ENDPOINT=https://your-s3-endpoint.com
-S3_PUBLIC_URL=https://cdn.your-domain.com
 ```
 
 **Configuration Examples for Different Providers**:
@@ -91,8 +92,7 @@ S3_BUCKET=my-bucket
 S3_ACCESS_KEY_ID=AKIA...
 S3_SECRET_ACCESS_KEY=...
 S3_REGION=us-east-1
-S3_ENDPOINT=  # Leave empty for AWS S3 (optional)
-S3_PUBLIC_URL=https://my-bucket.s3.us-east-1.amazonaws.com
+# S3_ENDPOINT is optional for AWS S3 (it uses the default endpoint)
 ```
 
 #### Cloudflare R2
@@ -103,7 +103,6 @@ S3_ACCESS_KEY_ID=...
 S3_SECRET_ACCESS_KEY=...
 S3_REGION=auto
 S3_ENDPOINT=https://<account-id>.r2.cloudflarestorage.com
-S3_PUBLIC_URL=https://media.goldgetters.be  # or R2.dev subdomain
 ```
 
 Setup steps:
@@ -111,7 +110,6 @@ Setup steps:
 1. Go to [Cloudflare Dashboard](https://dash.cloudflare.com/) > R2
 2. Create bucket and get Account ID
 3. Create API token with "Object Read & Write" permissions
-4. Optionally set up custom domain or R2.dev subdomain
 
 #### DigitalOcean Spaces
 
@@ -121,7 +119,6 @@ S3_ACCESS_KEY_ID=...
 S3_SECRET_ACCESS_KEY=...
 S3_REGION=nyc3
 S3_ENDPOINT=https://nyc3.digitaloceanspaces.com
-S3_PUBLIC_URL=https://my-space.nyc3.cdn.digitaloceanspaces.com
 ```
 
 #### MinIO (Self-hosted)
@@ -132,10 +129,22 @@ S3_ACCESS_KEY_ID=minioadmin
 S3_SECRET_ACCESS_KEY=minioadmin
 S3_REGION=us-east-1
 S3_ENDPOINT=http://localhost:9000
-S3_PUBLIC_URL=http://localhost:9000/payload-media
 ```
 
-**Note**: The `S3_PUBLIC_URL` is optional. If not set, files will be served through your Next.js application. Using a CDN or public URL is recommended for better performance.
+#### Advanced: Custom Domain or CDN (Optional)
+
+If you want to serve files through a custom domain or CDN instead of the default S3 URLs:
+
+```env
+S3_PUBLIC_URL=https://cdn.your-domain.com
+```
+
+**When to use `S3_PUBLIC_URL`**:
+
+- ✅ You have a CloudFront/Cloudflare CDN in front of your bucket
+- ✅ You're using a custom domain for R2 public access
+- ✅ You want to use DigitalOcean Spaces CDN endpoint
+- ❌ **Not needed** for basic S3/R2/Spaces setup - the adapter handles URLs automatically
 
 ### SMTP Email
 
@@ -193,8 +202,8 @@ On first visit, you'll be prompted to create an admin user account.
 ### Media Collection
 
 - **Upload enabled**: Yes
-- **Storage**: S3-compatible
-- **Public URL**: Configurable via `S3_PUBLIC_URL`
+- **Storage**: S3-compatible (automatic URL generation)
+- **Custom domain**: Optional via `S3_PUBLIC_URL` for CDN
 - **Image sizes**:
   - Thumbnail: 400x300
   - Card: 768x1024
