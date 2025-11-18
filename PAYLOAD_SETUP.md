@@ -3,7 +3,7 @@
 This project has been configured with PayloadCMS v3.64.0 with the following integrations:
 
 - **Database**: Turso (LibSQL/SQLite)
-- **Storage**: AWS S3 (or S3-compatible services)
+- **Storage**: S3-compatible (AWS S3, Cloudflare R2, DigitalOcean Spaces, MinIO, etc.)
 - **Email**: SMTP (using existing configuration)
 
 ## 📦 Installed Packages
@@ -21,14 +21,18 @@ This project has been configured with PayloadCMS v3.64.0 with the following inte
 ## 🔧 Configuration Files
 
 ### 1. `payload.config.ts`
+
 Main PayloadCMS configuration file with:
+
 - User authentication collection
-- Media collection with S3 storage
+- Media collection with S3-compatible storage
 - Turso database configuration
 - SMTP email configuration
 - Lexical rich text editor
+- Custom public URL support for CDN/custom domains
 
 ### 2. Next.js Integration
+
 - **Admin Panel**: `/app/(payload)/admin/[[...segments]]/page.tsx`
 - **API Routes**: `/app/(payload)/api/[...slug]/route.ts`
 - **Next Config**: `next.config.ts` wrapped with `withPayload()`
@@ -38,18 +42,21 @@ Main PayloadCMS configuration file with:
 Add these variables to your `.env` file (see `.env.example`):
 
 ### PayloadCMS
+
 ```env
 PAYLOAD_SECRET=your-secure-random-string-here
 NEXT_PUBLIC_SERVER_URL=http://localhost:3000
 ```
 
 ### Turso Database
+
 ```env
 TURSO_DATABASE_URL=libsql://your-database.turso.io
 TURSO_AUTH_TOKEN=your-turso-auth-token
 ```
 
 To create a Turso database:
+
 ```bash
 # Install Turso CLI
 curl -sSfL https://get.tur.so/install.sh | bash
@@ -64,21 +71,76 @@ turso db show goldgetters --url
 turso db tokens create goldgetters
 ```
 
-### S3 Storage
+### S3-Compatible Storage
+
 ```env
 S3_BUCKET=your-bucket-name
 S3_ACCESS_KEY_ID=your-access-key-id
 S3_SECRET_ACCESS_KEY=your-secret-access-key
-S3_REGION=us-east-1
-S3_ENDPOINT=https://s3.us-east-1.amazonaws.com
+S3_REGION=auto
+S3_ENDPOINT=https://your-s3-endpoint.com
+S3_PUBLIC_URL=https://cdn.your-domain.com
 ```
 
-**Note**: For S3-compatible services (DigitalOcean Spaces, MinIO, etc.), update the `S3_ENDPOINT` accordingly:
-- **DigitalOcean Spaces**: `https://nyc3.digitaloceanspaces.com`
-- **MinIO**: `http://localhost:9000` (or your MinIO server URL)
+**Configuration Examples for Different Providers**:
+
+#### AWS S3
+
+```env
+S3_BUCKET=my-bucket
+S3_ACCESS_KEY_ID=AKIA...
+S3_SECRET_ACCESS_KEY=...
+S3_REGION=us-east-1
+S3_ENDPOINT=  # Leave empty for AWS S3 (optional)
+S3_PUBLIC_URL=https://my-bucket.s3.us-east-1.amazonaws.com
+```
+
+#### Cloudflare R2
+
+```env
+S3_BUCKET=goldgetters-media
+S3_ACCESS_KEY_ID=...
+S3_SECRET_ACCESS_KEY=...
+S3_REGION=auto
+S3_ENDPOINT=https://<account-id>.r2.cloudflarestorage.com
+S3_PUBLIC_URL=https://media.goldgetters.be  # or R2.dev subdomain
+```
+
+Setup steps:
+
+1. Go to [Cloudflare Dashboard](https://dash.cloudflare.com/) > R2
+2. Create bucket and get Account ID
+3. Create API token with "Object Read & Write" permissions
+4. Optionally set up custom domain or R2.dev subdomain
+
+#### DigitalOcean Spaces
+
+```env
+S3_BUCKET=my-space
+S3_ACCESS_KEY_ID=...
+S3_SECRET_ACCESS_KEY=...
+S3_REGION=nyc3
+S3_ENDPOINT=https://nyc3.digitaloceanspaces.com
+S3_PUBLIC_URL=https://my-space.nyc3.cdn.digitaloceanspaces.com
+```
+
+#### MinIO (Self-hosted)
+
+```env
+S3_BUCKET=payload-media
+S3_ACCESS_KEY_ID=minioadmin
+S3_SECRET_ACCESS_KEY=minioadmin
+S3_REGION=us-east-1
+S3_ENDPOINT=http://localhost:9000
+S3_PUBLIC_URL=http://localhost:9000/payload-media
+```
+
+**Note**: The `S3_PUBLIC_URL` is optional. If not set, files will be served through your Next.js application. Using a CDN or public URL is recommended for better performance.
 
 ### SMTP Email
+
 These are already configured in your project:
+
 ```env
 SMTP_HOST=smtp.example.com
 SMTP_PORT=587
@@ -90,30 +152,37 @@ CONTACT_EMAIL_FROM=noreply@goldgetters.be
 ## 🚀 Getting Started
 
 ### 1. Set up environment variables
+
 Copy `.env.example` to `.env` and fill in your values:
+
 ```bash
 cp .env.example .env
 ```
 
 ### 2. Generate a secure PAYLOAD_SECRET
+
 ```bash
 openssl rand -base64 32
 ```
 
 ### 3. Start the development server
+
 ```bash
-npm run dev
+pnpm run dev
 ```
 
 ### 4. Access the admin panel
+
 Navigate to: `http://localhost:3000/admin`
 
 ### 5. Create your first admin user
+
 On first visit, you'll be prompted to create an admin user account.
 
 ## 📚 Collections
 
 ### Users Collection
+
 - **Auth enabled**: Yes
 - **Fields**:
   - Email (auth field)
@@ -122,8 +191,10 @@ On first visit, you'll be prompted to create an admin user account.
   - Role (admin/editor/user)
 
 ### Media Collection
+
 - **Upload enabled**: Yes
-- **Storage**: S3
+- **Storage**: S3-compatible
+- **Public URL**: Configurable via `S3_PUBLIC_URL`
 - **Image sizes**:
   - Thumbnail: 400x300
   - Card: 768x1024
@@ -134,11 +205,13 @@ On first visit, you'll be prompted to create an admin user account.
 ## 🔌 API Access
 
 ### REST API
+
 - Base URL: `http://localhost:3000/api`
 - Collections: `/api/users`, `/api/media`
 - Auth: `/api/users/login`, `/api/users/logout`
 
 ### GraphQL API
+
 - Endpoint: `http://localhost:3000/api/graphql`
 - Playground: Available in development mode
 
@@ -149,6 +222,7 @@ PayloadCMS automatically generates TypeScript types in `payload-types.ts`. These
 ## 🎨 Customization
 
 ### Adding New Collections
+
 Edit `payload.config.ts` and add new collections in the `collections` array:
 
 ```typescript
@@ -169,6 +243,7 @@ Edit `payload.config.ts` and add new collections in the `collections` array:
 ```
 
 ### Adding New Fields
+
 Add fields to existing collections in `payload.config.ts`.
 
 ## 🔒 Security Notes
@@ -176,27 +251,37 @@ Add fields to existing collections in `payload.config.ts`.
 1. **Never commit** your `.env` file
 2. Use a **strong PAYLOAD_SECRET** (at least 32 characters)
 3. Keep your **Turso auth token** secure
-4. Use **IAM policies** to restrict S3 access
-5. Enable **2FA** for production admin accounts
+4. Keep your **S3 API credentials** secure and rotate them periodically
+5. Restrict S3 bucket access with appropriate policies
+6. Enable **2FA** for production admin accounts
 
 ## 📖 Documentation
 
 - [PayloadCMS Docs](https://payloadcms.com/docs)
 - [Turso Docs](https://docs.turso.tech/)
 - [AWS S3 Docs](https://docs.aws.amazon.com/s3/)
+- [Cloudflare R2 Docs](https://developers.cloudflare.com/r2/)
+- [DigitalOcean Spaces Docs](https://docs.digitalocean.com/products/spaces/)
 
 ## 🆘 Troubleshooting
 
 ### Database connection issues
+
 - Verify `TURSO_DATABASE_URL` and `TURSO_AUTH_TOKEN` are correct
 - Check Turso database is active: `turso db list`
 
 ### S3 upload issues
+
 - Verify bucket exists and credentials are correct
-- Check bucket permissions and CORS configuration
-- Ensure `S3_REGION` matches your bucket region
+- Check that `S3_ENDPOINT` is formatted correctly for your provider
+- Verify API credentials have read/write permissions
+- Check CORS configuration if accessing files from browser
+- For AWS S3: Ensure IAM permissions are configured correctly
+- For Cloudflare R2: Verify account ID in endpoint URL
+- For public access, ensure bucket permissions or CDN is configured
 
 ### Email not sending
+
 - Verify SMTP credentials are correct
 - Check SMTP port (usually 587 for TLS, 465 for SSL)
 - Ensure your email provider allows SMTP access
@@ -218,6 +303,7 @@ npx payload migrate
 1. Set `NEXT_PUBLIC_SERVER_URL` to your production URL
 2. Use production Turso database
 3. Configure production S3 bucket
-4. Set `NODE_ENV=production`
-5. Build the project: `npm run build`
-6. Start the server: `npm start`
+4. Set up CDN or custom domain for public file access (recommended)
+5. Set `NODE_ENV=production`
+6. Build the project: `pnpm run build`
+7. Start the server: `pnpm start`

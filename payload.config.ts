@@ -1,14 +1,14 @@
-import { buildConfig } from 'payload'
-import { lexicalEditor } from '@payloadcms/richtext-lexical'
-import { sqliteAdapter } from '@payloadcms/db-sqlite'
-import { s3Storage } from '@payloadcms/storage-s3'
-import path from 'path'
-import { fileURLToPath } from 'url'
-import sharp from 'sharp'
-import { createClient } from '@libsql/client'
+import { buildConfig } from 'payload';
+import { lexicalEditor } from '@payloadcms/richtext-lexical';
+import { sqliteAdapter } from '@payloadcms/db-sqlite';
+import { s3Storage } from '@payloadcms/storage-s3';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import sharp from 'sharp';
+import { createClient } from '@libsql/client';
 
-const filename = fileURLToPath(import.meta.url)
-const dirname = path.dirname(filename)
+const filename = fileURLToPath(import.meta.url);
+const dirname = path.dirname(filename);
 
 export default buildConfig({
   // Basic configuration
@@ -101,12 +101,18 @@ export default buildConfig({
     fromAddress: process.env.CONTACT_EMAIL_FROM || 'noreply@goldgetters.be',
   },
 
-  // Storage - S3
+  // Storage - S3-compatible (AWS S3, Cloudflare R2, DigitalOcean Spaces, MinIO, etc.)
   plugins: [
     s3Storage({
       collections: {
         media: {
           prefix: 'media',
+          // Use custom public URL if configured (for CDN or custom domain)
+          ...(process.env.S3_PUBLIC_URL && {
+            generateFileURL: ({ filename, prefix }) => {
+              return `${process.env.S3_PUBLIC_URL}/${prefix ? `${prefix}/` : ''}${filename}`;
+            },
+          }),
         },
       },
       bucket: process.env.S3_BUCKET || '',
@@ -115,8 +121,9 @@ export default buildConfig({
           accessKeyId: process.env.S3_ACCESS_KEY_ID || '',
           secretAccessKey: process.env.S3_SECRET_ACCESS_KEY || '',
         },
-        region: process.env.S3_REGION || 'us-east-1',
-        endpoint: process.env.S3_ENDPOINT, // For S3-compatible services like MinIO, DigitalOcean Spaces, etc.
+        region: process.env.S3_REGION || 'auto',
+        endpoint: process.env.S3_ENDPOINT, // S3-compatible endpoint
+        forcePathStyle: true, // Required for some S3-compatible services
       },
     }),
   ],
@@ -136,4 +143,4 @@ export default buildConfig({
   admin: {
     user: 'users',
   },
-})
+});
