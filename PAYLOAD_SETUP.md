@@ -162,29 +162,42 @@ CONTACT_EMAIL_FROM=noreply@goldgetters.be
 
 ### 1. Set up environment variables
 
-Copy `.env.example` to `.env` and fill in your values:
+A `.env` file has been created with development defaults. Update it with your actual credentials:
 
-```bash
-cp .env.example .env
+**Minimum required for local development:**
+
+```env
+PAYLOAD_SECRET=<generate-a-secure-random-string>
+NEXT_PUBLIC_SERVER_URL=http://localhost:3000
 ```
 
-### 2. Generate a secure PAYLOAD_SECRET
+Generate a secure `PAYLOAD_SECRET`:
 
 ```bash
 openssl rand -base64 32
 ```
 
-### 3. Start the development server
+**For production**, also configure:
+
+- Turso database credentials
+- S3-compatible storage credentials
+- SMTP email credentials
+
+See `.env.example` for all available options.
+
+### 2. Start the development server
 
 ```bash
 pnpm run dev
 ```
 
-### 4. Access the admin panel
+**Note:** The database schema will be automatically created on first run. No manual migration needed for development.
+
+### 3. Access the admin panel
 
 Navigate to: `http://localhost:3000/admin`
 
-### 5. Create your first admin user
+### 4. Create your first admin user
 
 On first visit, you'll be prompted to create an admin user account.
 
@@ -294,10 +307,13 @@ Add fields to existing collections in `payload.config.ts`.
 - Verify SMTP credentials are correct
 - Check SMTP port (usually 587 for TLS, 465 for SSL)
 - Ensure your email provider allows SMTP access
+- **Note**: SMTP verification on boot is disabled (`verifyTransportOnBoot: false`) to prevent blocking app startup if SMTP isn't configured. Email will still work once properly configured.
 
 ## 🔄 Database Migrations
 
-For production deployments, you may want to run migrations:
+**Development**: PayloadCMS automatically syncs the database schema when you start the dev server. No manual migrations needed.
+
+**Production**: For production deployments with schema changes, you may want to generate and run migrations:
 
 ```bash
 # Generate migration
@@ -306,6 +322,8 @@ npx payload migrate:create
 # Run migrations
 npx payload migrate
 ```
+
+**Note**: The Payload CLI may have issues with ESM configs. If you encounter errors, the database will still auto-sync in development mode.
 
 ## 🌐 Production Deployment
 
