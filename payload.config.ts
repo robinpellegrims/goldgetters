@@ -2,10 +2,10 @@ import { buildConfig } from 'payload';
 import { lexicalEditor } from '@payloadcms/richtext-lexical';
 import { sqliteAdapter } from '@payloadcms/db-sqlite';
 import { s3Storage } from '@payloadcms/storage-s3';
+import { nodemailerAdapter } from '@payloadcms/email-nodemailer';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import sharp from 'sharp';
-import { createClient } from '@libsql/client';
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
@@ -79,15 +79,18 @@ export default buildConfig({
 
   // Database - Turso with LibSQL
   db: sqliteAdapter({
-    client: createClient({
+    client: {
       url: process.env.TURSO_DATABASE_URL || 'file:local.db',
       authToken: process.env.TURSO_AUTH_TOKEN,
-    }),
+    },
     logger: process.env.NODE_ENV === 'development',
   }),
 
   // Email - SMTP
-  email: {
+  email: nodemailerAdapter({
+    defaultFromAddress:
+      process.env.CONTACT_EMAIL_FROM || 'noreply@goldgetters.be',
+    defaultFromName: 'Gold Getters',
     transportOptions: {
       host: process.env.SMTP_HOST,
       port: Number(process.env.SMTP_PORT) || 587,
@@ -97,9 +100,7 @@ export default buildConfig({
         pass: process.env.SMTP_PASS,
       },
     },
-    fromName: 'Gold Getters',
-    fromAddress: process.env.CONTACT_EMAIL_FROM || 'noreply@goldgetters.be',
-  },
+  }),
 
   // Storage - S3-compatible (AWS S3, Cloudflare R2, DigitalOcean Spaces, MinIO, etc.)
   plugins: [
