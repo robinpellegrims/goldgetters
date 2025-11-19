@@ -307,7 +307,7 @@ Add fields to existing collections in `payload.config.ts`.
 - Verify SMTP credentials are correct
 - Check SMTP port (usually 587 for TLS, 465 for SSL)
 - Ensure your email provider allows SMTP access
-- **Note**: SMTP verification on boot is disabled (`verifyTransportOnBoot: false`) to prevent blocking app startup if SMTP isn't configured. Email will still work once properly configured.
+- Email will work once SMTP credentials are properly configured in your `.env` file
 
 ## 🔄 Database Migrations
 
