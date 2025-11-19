@@ -80,8 +80,10 @@ export default buildConfig({
   // Database - Turso with LibSQL
   db: sqliteAdapter({
     client: {
-      url: process.env.TURSO_DATABASE_URL || 'file:local.db',
-      authToken: process.env.TURSO_AUTH_TOKEN,
+      url: process.env.TURSO_DATABASE_URL || 'file:./local.db',
+      ...(process.env.TURSO_AUTH_TOKEN && {
+        authToken: process.env.TURSO_AUTH_TOKEN,
+      }),
     },
     logger: process.env.NODE_ENV === 'development',
     push: true, // Auto-sync database schema (creates tables if they don't exist)
