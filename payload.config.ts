@@ -87,20 +87,22 @@ export default buildConfig({
     push: true, // Auto-sync database schema (creates tables if they don't exist)
   }),
 
-  // Email - SMTP
-  email: nodemailerAdapter({
-    defaultFromAddress:
-      process.env.CONTACT_EMAIL_FROM || 'noreply@goldgetters.be',
-    defaultFromName: 'Gold Getters',
-    transportOptions: {
-      host: process.env.SMTP_HOST,
-      port: Number(process.env.SMTP_PORT) || 587,
-      secure: false, // Use TLS
-      auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
+  // Email - SMTP (only configured if SMTP_HOST is set)
+  ...(process.env.SMTP_HOST && {
+    email: nodemailerAdapter({
+      defaultFromAddress:
+        process.env.CONTACT_EMAIL_FROM || 'noreply@goldgetters.be',
+      defaultFromName: 'Gold Getters',
+      transportOptions: {
+        host: process.env.SMTP_HOST,
+        port: Number(process.env.SMTP_PORT) || 587,
+        secure: false, // Use TLS
+        auth: {
+          user: process.env.SMTP_USER,
+          pass: process.env.SMTP_PASS,
+        },
       },
-    },
+    }),
   }),
 
   // Storage - S3-compatible (AWS S3, Cloudflare R2, DigitalOcean Spaces, MinIO, etc.)
