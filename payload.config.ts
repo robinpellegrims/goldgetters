@@ -146,5 +146,8 @@ export default buildConfig({
   // Admin panel
   admin: {
     user: 'users',
+    importMap: {
+      baseDir: path.resolve(dirname),
+    },
   },
 });
