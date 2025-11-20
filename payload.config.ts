@@ -1,5 +1,5 @@
 import { buildConfig } from 'payload';
-import { lexicalEditor } from '@payloadcms/richtext-lexical';
+// import { lexicalEditor } from '@payloadcms/richtext-lexical';
 import { sqliteAdapter } from '@payloadcms/db-sqlite';
 import { s3Storage } from '@payloadcms/storage-s3';
 import { nodemailerAdapter } from '@payloadcms/email-nodemailer';
@@ -132,8 +132,8 @@ export default buildConfig({
     }),
   ],
 
-  // Editor
-  editor: lexicalEditor({}),
+  // Editor - temporarily removed to debug CodeEditor issue
+  // editor: lexicalEditor({}),
 
   // Sharp for image processing
   sharp,
