@@ -56,33 +56,43 @@ export function ContactForm() {
   const [turnstileToken, setTurnstileToken] = useState<string>('');
   const turnstileRef = useRef<HTMLDivElement>(null);
   const widgetIdRef = useRef<string>('');
+  const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
 
+  /*
+   * Persistent Script Loader Strategy
+   * 1. Check if script exists, if not create it.
+   * 2. Do NOT remove script on unmount.
+   * 3. Wait for window.turnstile to be defined.
+   * 4. Explicitly render widget.
+   */
   useEffect(() => {
-    // Only load Turnstile if site key is configured
-    const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
     if (!siteKey) {
-      console.warn(
-        'NEXT_PUBLIC_TURNSTILE_SITE_KEY is not set. Turnstile will not be loaded.',
-      );
+      console.warn('Turnstile site key missing');
       return;
     }
 
-    // Load Turnstile script
-    const script = document.createElement('script');
-    script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js';
-    script.async = true;
-    script.defer = true;
-    script.onload = () => {
-      if (turnstileRef.current && window.turnstile) {
-        widgetIdRef.current = window.turnstile.render(turnstileRef.current, {
+    let mounted = true;
+
+    const renderWidget = () => {
+      if (!mounted || !turnstileRef.current || !window.turnstile) return;
+
+      // Clean up existing widget if any to prevent duplicates
+      if (widgetIdRef.current) {
+        window.turnstile.remove(widgetIdRef.current);
+        widgetIdRef.current = '';
+      }
+
+      try {
+        const id = window.turnstile.render(turnstileRef.current, {
           sitekey: siteKey,
           callback: (token: string) => {
             setTurnstileToken(token);
+            setErrors((prev) => ({ ...prev, turnstile: undefined }));
           },
           'error-callback': () => {
             setErrors((prev) => ({
               ...prev,
-              turnstile: 'Turnstile verification failed',
+              turnstile: 'Verificatie mislukt. Probeer het opnieuw.',
             }));
           },
           'expired-callback': () => {
@@ -90,19 +100,55 @@ export function ContactForm() {
           },
           theme: 'auto',
         });
+        widgetIdRef.current = id;
+      } catch (err) {
+        console.error('Turnstile render error:', err);
       }
     };
-    document.body.appendChild(script);
+
+    // Check availability
+    if (window.turnstile) {
+      renderWidget();
+    } else {
+      // Ensure script is injected
+      const scriptId = 'turnstile-script';
+      if (!document.getElementById(scriptId)) {
+        const script = document.createElement('script');
+        script.id = scriptId;
+        script.src =
+          'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
+        script.async = true;
+        script.defer = true;
+        document.body.appendChild(script);
+      }
+
+      // Poll for availability (robust against already-loading scripts)
+      const intervalId = setInterval(() => {
+        if (window.turnstile) {
+          clearInterval(intervalId);
+          renderWidget();
+        }
+      }, 100);
+
+      // Cleanup polling on unmount
+      return () => {
+        mounted = false;
+        clearInterval(intervalId);
+        if (widgetIdRef.current && window.turnstile) {
+          window.turnstile.remove(widgetIdRef.current);
+          widgetIdRef.current = '';
+        }
+      };
+    }
 
     return () => {
+      mounted = false;
       if (widgetIdRef.current && window.turnstile) {
         window.turnstile.remove(widgetIdRef.current);
-      }
-      if (document.body.contains(script)) {
-        document.body.removeChild(script);
+        widgetIdRef.current = '';
       }
     };
-  }, []);
+  }, [siteKey]);
 
   const validateForm = (): boolean => {
     const newErrors: FormErrors = {};
@@ -126,7 +172,7 @@ export function ContactForm() {
     }
 
     // Only validate turnstile if the site key is configured
-    if (process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY && !turnstileToken) {
+    if (siteKey && !turnstileToken) {
       newErrors.turnstile = 'Gelieve de verificatie te voltooien';
     }
 
@@ -251,7 +297,7 @@ export function ContactForm() {
         <FieldError>{errors.message}</FieldError>
       </Field>
 
-      {process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY && (
+      {siteKey && (
         <Field data-invalid={!!errors.turnstile}>
           <div ref={turnstileRef}></div>
           <FieldError>{errors.turnstile}</FieldError>
