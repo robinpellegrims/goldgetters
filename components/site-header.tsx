@@ -13,11 +13,11 @@ import { ThemeToggle } from '@/components/theme-toggle';
 
 export function SiteHeader() {
   const items = [
-    { href: '/nieuws', label: 'nieuws' },
-    { href: '/ploeg', label: 'ploeg' },
-    { href: '/wedstrijden', label: 'wedstrijden' },
-    { href: '/fotos', label: "foto's" },
-    { href: '/statistieken', label: 'statistieken' },
+    // { href: '/nieuws', label: 'nieuws' },
+    // { href: '/ploeg', label: 'ploeg' },
+    // { href: '/wedstrijden', label: 'wedstrijden' },
+    // { href: '/fotos', label: "foto's" },
+    // { href: '/statistieken', label: 'statistieken' },
     { href: '/contact', label: 'contact' },
   ];
 
