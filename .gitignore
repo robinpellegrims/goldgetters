@@ -45,3 +45,9 @@ next-env.d.ts
 # Playwright
 playwright-report
 test-results
+
+# PayloadCMS
+payload.db
+payload.db-journal
+payload-types.ts
+/media
