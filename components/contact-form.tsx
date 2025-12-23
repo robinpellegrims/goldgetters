@@ -1,30 +1,12 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Field, FieldLabel, FieldError } from '@/components/ui/field';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-
-declare global {
-  interface Window {
-    turnstile?: {
-      render: (
-        container: string | HTMLElement,
-        options: {
-          sitekey: string;
-          callback?: (token: string) => void;
-          'error-callback'?: () => void;
-          'expired-callback'?: () => void;
-          theme?: 'light' | 'dark' | 'auto';
-        },
-      ) => string;
-      reset: (widgetId: string) => void;
-      remove: (widgetId: string) => void;
-    };
-  }
-}
+import { Turnstile, TurnstileRef } from '@/components/turnstile';
 
 interface FormData {
   name: string;
@@ -54,101 +36,8 @@ export function ContactForm() {
     'idle' | 'success' | 'error'
   >('idle');
   const [turnstileToken, setTurnstileToken] = useState<string>('');
-  const turnstileRef = useRef<HTMLDivElement>(null);
-  const widgetIdRef = useRef<string>('');
+  const turnstileRef = useRef<TurnstileRef>(null);
   const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
-
-  /*
-   * Persistent Script Loader Strategy
-   * 1. Check if script exists, if not create it.
-   * 2. Do NOT remove script on unmount.
-   * 3. Wait for window.turnstile to be defined.
-   * 4. Explicitly render widget.
-   */
-  useEffect(() => {
-    if (!siteKey) {
-      console.warn('Turnstile site key missing');
-      return;
-    }
-
-    let mounted = true;
-
-    const renderWidget = () => {
-      if (!mounted || !turnstileRef.current || !window.turnstile) return;
-
-      // Clean up existing widget if any to prevent duplicates
-      if (widgetIdRef.current) {
-        window.turnstile.remove(widgetIdRef.current);
-        widgetIdRef.current = '';
-      }
-
-      try {
-        const id = window.turnstile.render(turnstileRef.current, {
-          sitekey: siteKey,
-          callback: (token: string) => {
-            setTurnstileToken(token);
-            setErrors((prev) => ({ ...prev, turnstile: undefined }));
-          },
-          'error-callback': () => {
-            setErrors((prev) => ({
-              ...prev,
-              turnstile: 'Verificatie mislukt. Probeer het opnieuw.',
-            }));
-          },
-          'expired-callback': () => {
-            setTurnstileToken('');
-          },
-          theme: 'auto',
-        });
-        widgetIdRef.current = id;
-      } catch (err) {
-        console.error('Turnstile render error:', err);
-      }
-    };
-
-    // Check availability
-    if (window.turnstile) {
-      renderWidget();
-    } else {
-      // Ensure script is injected
-      const scriptId = 'turnstile-script';
-      if (!document.getElementById(scriptId)) {
-        const script = document.createElement('script');
-        script.id = scriptId;
-        script.src =
-          'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
-        script.async = true;
-        script.defer = true;
-        document.body.appendChild(script);
-      }
-
-      // Poll for availability (robust against already-loading scripts)
-      const intervalId = setInterval(() => {
-        if (window.turnstile) {
-          clearInterval(intervalId);
-          renderWidget();
-        }
-      }, 100);
-
-      // Cleanup polling on unmount
-      return () => {
-        mounted = false;
-        clearInterval(intervalId);
-        if (widgetIdRef.current && window.turnstile) {
-          window.turnstile.remove(widgetIdRef.current);
-          widgetIdRef.current = '';
-        }
-      };
-    }
-
-    return () => {
-      mounted = false;
-      if (widgetIdRef.current && window.turnstile) {
-        window.turnstile.remove(widgetIdRef.current);
-        widgetIdRef.current = '';
-      }
-    };
-  }, [siteKey]);
 
   const validateForm = (): boolean => {
     const newErrors: FormErrors = {};
@@ -209,9 +98,7 @@ export function ContactForm() {
       setSubmitStatus('success');
       setFormData({ name: '', email: '', subject: '', message: '' });
       setTurnstileToken('');
-      if (widgetIdRef.current && window.turnstile) {
-        window.turnstile.reset(widgetIdRef.current);
-      }
+      turnstileRef.current?.reset();
     } catch (error) {
       console.error('Error submitting form:', error);
       setSubmitStatus('error');
@@ -299,7 +186,23 @@ export function ContactForm() {
 
       {siteKey && (
         <Field data-invalid={!!errors.turnstile}>
-          <div ref={turnstileRef}></div>
+          <Turnstile
+            ref={turnstileRef}
+            siteKey={siteKey}
+            onVerify={(token) => {
+              setTurnstileToken(token);
+              setErrors((prev) => ({ ...prev, turnstile: undefined }));
+            }}
+            onError={() => {
+              setErrors((prev) => ({
+                ...prev,
+                turnstile: 'Turnstile verification failed',
+              }));
+            }}
+            onExpire={() => {
+              setTurnstileToken('');
+            }}
+          />
           <FieldError>{errors.turnstile}</FieldError>
         </Field>
       )}
