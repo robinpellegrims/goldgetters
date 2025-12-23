@@ -10,3 +10,7 @@ package-lock.json
 .idea
 .env
 .vercel
+
+# Payload generated files
+app/(payload)/admin/importMap.js
+payload-types.ts
